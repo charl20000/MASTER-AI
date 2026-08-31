@@ -1,0 +1,34 @@
+{
+  "name": "master-ai",
+  "version": "1.0.0",
+  "description": "🧠 MASTER AI - Interface IA par Master Charbel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charl20000/master-ai.git"
+  },
+  "keywords": ["ai", "chat", "master", "charbel", "interface"],
+  "author": "Master Charbel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/charl20000/master-ai/issues"
+  },
+  "homepage": "https://github.com/charl20000/master-ai#readme"
+}
