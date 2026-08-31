@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 MASTER AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="icon">🧠</span>
+                <span class="title">MASTER AI</span>
+            </div>
+            <div class="status">
+                <span class="dot"></span>
+                <span id="statusText">En ligne</span>
+            </div>
+        </header>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="messages" id="messages">
+                <div class="message bot">
+                    <div class="avatar">🧠</div>
+                    <div class="bubble">
+                        👑 Bienvenue sur <strong>MASTER AI</strong> !<br>
+                        Je suis ton assistant intelligent. Pose-moi une question ! 🚀
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="inputMessage" placeholder="Pose ta question à MASTER AI..." autofocus>
+            <button id="sendButton" onclick="sendMessage()">
+                <span>➤</span>
+            </button>
+        </div>
+
+        <div class="footer">
+            <span>👑 Master Charbel</span>
+            <span id="statsInfo">✅ API connectée</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
