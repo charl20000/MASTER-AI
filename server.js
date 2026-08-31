@@ -8,9 +8,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ─── CONFIGURATION DEPUIS .env ───
+// ─── CONFIGURATION ───
 const API_URL = process.env.API_URL || "https://api-ai-ne1s.onrender.com";
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.API_KEY || "ma-super-clef-api-2026";
 
 // ─── MIDDLEWARES ───
 app.use(helmet({
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ─── ENDPOINT CHAT ───
+// ─── ENDPOINT CHAT AVEC FALLBACK ───
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history } = req.body;
@@ -34,10 +34,7 @@ app.post('/api/chat', async (req, res) => {
             return res.status(400).json({ error: 'Message requis' });
         }
 
-        if (!API_KEY) {
-            return res.status(500).json({ error: 'Clé API non configurée' });
-        }
-
+        // ─── CONSTRUCTION DU PROMPT ───
         let prompt = message;
         if (history && history.length > 0) {
             const lastMessages = history.slice(-5);
@@ -47,13 +44,36 @@ app.post('/api/chat', async (req, res) => {
             prompt = `${historyText}\nUtilisateur: ${message}\nMASTER AI:`;
         }
 
-        const response = await axios.post(
-            `${API_URL}/api/generate`,
-            { prompt: prompt },
-            { headers: { "x-api-key": API_KEY } }
-        );
+        // ─── APPEL À L'API ───
+        let reply = "Je n'ai pas pu générer de réponse. Réessaie plus tard.";
 
-        const reply = response.data.result || "Je n'ai pas pu générer de réponse.";
+        try {
+            const response = await axios.post(
+                `${API_URL}/api/generate`,
+                { prompt: prompt },
+                { 
+                    headers: { "x-api-key": API_KEY },
+                    timeout: 15000
+                }
+            );
+            
+            if (response.data && response.data.result) {
+                reply = response.data.result;
+            } else {
+                reply = "L'API a répondu mais le format est invalide.";
+            }
+        } catch (apiError) {
+            console.error('Erreur API:', apiError.message);
+            
+            // ─── FALLBACK : Réponses prédéfinies ───
+            const fallbacks = [
+                "Je suis MASTER AI, ton assistant intelligent. Comment puis-je t'aider ?",
+                "Désolé, l'API est temporairement indisponible. Réessaie dans quelques instants.",
+                "Je suis en ligne mais je n'arrive pas à contacter mon cerveau IA. Réessaie plus tard.",
+                "MASTER AI est actuellement en maintenance. Reviens dans 5 minutes !"
+            ];
+            reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
 
         res.json({
             success: true,
@@ -62,10 +82,10 @@ app.post('/api/chat', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erreur chat:', error);
+        console.error('Erreur serveur:', error);
         res.status(500).json({ 
             error: 'Erreur serveur',
-            message: error.message 
+            message: 'Une erreur est survenue. Réessaie plus tard.'
         });
     }
 });
@@ -73,7 +93,7 @@ app.post('/api/chat', async (req, res) => {
 // ─── ENDPOINT STATS ───
 app.get('/api/stats', async (req, res) => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL, { timeout: 5000 });
         res.json({
             apiStatus: '✅ En ligne',
             apiData: response.data,
