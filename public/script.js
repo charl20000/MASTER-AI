@@ -26,11 +26,11 @@ async function sendMessage() {
             messageHistory.push({ role: 'user', content: message });
             messageHistory.push({ role: 'assistant', content: data.message });
         } else {
-            addMessage('❌ ' + (data.error || 'Erreur inconnue'), 'bot');
+            addMessage('❌ ' + (data.error || data.message || 'Erreur inconnue'), 'bot');
         }
     } catch (error) {
         hideTyping();
-        addMessage('❌ Erreur : ' + error.message, 'bot');
+        addMessage('❌ Erreur de connexion : ' + error.message, 'bot');
     }
 }
 
